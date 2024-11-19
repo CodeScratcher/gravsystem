@@ -4,6 +4,7 @@
  */
 package com.skiscratcher.GravitySim;
 
+import java.text.NumberFormat;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,8 +43,9 @@ public class Object {
     public void update(List<Object> objects, double delta) {
         Vector2D midVelocity = velocity.add(acceleration.scalarMultiply(delta / 2));
 
-        acceleration = force.scalarMultiply(1 / mass);
         applyGravity(objects);
+        acceleration = force.scalarMultiply(1 / mass);
+        System.out.println(acceleration.toString(NumberFormat.getNumberInstance()));
 
 
         position = position.add(midVelocity.scalarMultiply(delta));
