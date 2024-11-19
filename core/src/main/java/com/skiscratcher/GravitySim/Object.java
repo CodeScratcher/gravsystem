@@ -24,49 +24,34 @@ public class Object {
     private Vector2D velocity;
     private Vector2D acceleration = new Vector2D(0, 0);
     private Vector2D force = new Vector2D(0, 0);
-    private Vector2D nextPosition;
-    private Vector2D nextVelocity;
-    
+
     private final double mass;
     private final double G = 6.67430e-11;
 
     public Object(Vector2D position, Vector2D velocity, double mass) {
         this.position = position;
         this.velocity = velocity;
-        this.nextPosition = position;
-        this.nextVelocity = velocity;
         this.mass = mass;
     }
-    
+
     /**
      * Apply gravity and then move
      * @param objects List of objects to be attracted to
      * @param delta Time since last frame in seconds per frame
      */
     public void update(List<Object> objects, double delta) {
-        applyGravity(objects);
-        updateOverTime(delta);
-    }
-    
-    /**
-     * Updates position, velocity, and acceleration
-     * @param delta Time since last frame in seconds per frame 
-     */
-    public void updateOverTime(double delta) {
+        Vector2D midVelocity = velocity.add(acceleration.scalarMultiply(delta / 2));
+
         acceleration = force.scalarMultiply(1 / mass);
-        Vector2D nV = nextVelocity;
-        Vector2D nP = nextPosition;
-        
-        nextVelocity = velocity.add(acceleration.scalarMultiply(delta));
-        nextPosition = position.add(nextVelocity.scalarMultiply(delta));
-        
-        velocity = nV;
-        position = nP;
+        applyGravity(objects);
+
+
+        position = position.add(midVelocity.scalarMultiply(delta));
+        velocity = midVelocity.add(acceleration.scalarMultiply(delta / 2));
     }
-    
-    /** 
+    /**
      * Applies gravity
-     * @param objects List of objects to be attracted to 
+     * @param objects List of objects to be attracted to
      */
     public void applyGravity(List<Object> objects) {
         force = new Vector2D(0.0, 0.0);
@@ -77,5 +62,5 @@ public class Object {
             }
         }
     }
-    
+
 }
