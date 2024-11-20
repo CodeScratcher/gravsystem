@@ -20,8 +20,8 @@ public class Main extends ApplicationAdapter {
     private ShapeRenderer sr;
     private OrthographicCamera cam;
     private int objFollowed = 0;
-    private final double scale = 1e9;
-    private final double timescale = 100000;
+    private final double scale = 1e7;
+    private final double timescale = 10000;
     private List<Object> objects;
 
     @Override
@@ -36,10 +36,10 @@ public class Main extends ApplicationAdapter {
         cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
 
         objects = new ArrayList<>();
-        objects.add(new Object(new Vector2D(0, 0), new Vector2D(0, 0), 1.988400e30));
-        objects.add(new Object(new Vector2D(152099968880.0, 0), new Vector2D(0, 29290), 5.9722e24));
-        // objects.add(new Object(new Vector2D(0, 0), new Vector2D(0, 0), 9.45996e24));
-        // objects.add(new Object(new Vector2D(416490000, 0), new Vector2D(0, 1243.49862203), 1.06e20));
+        // objects.add(new Object(new Vector2D(0, 0), new Vector2D(0, 0), 1.988400e30));
+        // objects.add(new Object(new Vector2D(152099968880.0, 0), new Vector2D(0, 29290), 5.9722e24));
+        objects.add(new Object(new Vector2D(0, 0), new Vector2D(0, 0), 9.45996e24));
+        objects.add(new Object(new Vector2D(416490000, 0), new Vector2D(0, 1243.49862203), 1.06e20));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class Main extends ApplicationAdapter {
            ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
        }
 
-       // ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
+
 
        batch.begin();
 

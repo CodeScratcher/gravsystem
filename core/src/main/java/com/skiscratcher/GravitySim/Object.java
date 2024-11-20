@@ -42,13 +42,12 @@ public class Object {
      */
     public void update(List<Object> objects, double delta) {
         Vector2D midVelocity = velocity.add(acceleration.scalarMultiply(delta / 2));
+        position = position.add(midVelocity.scalarMultiply(delta));
 
         applyGravity(objects);
         acceleration = force.scalarMultiply(1 / mass);
         System.out.println(acceleration.toString(NumberFormat.getNumberInstance()));
 
-
-        position = position.add(midVelocity.scalarMultiply(delta));
         velocity = midVelocity.add(acceleration.scalarMultiply(delta / 2));
     }
     /**
@@ -60,6 +59,7 @@ public class Object {
         for (Object object : objects) {
             if (object != this) {
                 double pull = G * ((mass * object.mass) / (Math.pow(position.distance(object.position), 2)));
+                // System.out.println(pull);
                 force = force.add(object.position.subtract(position).normalize().scalarMultiply(pull));
             }
         }
