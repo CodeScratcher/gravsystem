@@ -45,7 +45,9 @@ public class Main extends ApplicationAdapter {
         // objects.add(new Object(new Vector2D(152099968880.0, 0), new Vector2D(0, 29290), 5.9722e24));
         objects.add(new Object(new Vector2D(0, 0), new Vector2D(0, 0), 9.45996e24, new Color(0.3f, 0.7f, 1.0f, 1.0f), 5.0));
         objects.add(new Object(new Vector2D(416490000, 0), new Vector2D(0, 1243.49862203), 1.06e22, new Color(0.6f, 0.6f, 0.6f, 1.0f), 1.0));
-        objects.add(new Object(new Vector2D(56541880, 0), new Vector2D(0, 3400), 450000, new Color(1, 1, 1, 1), 0.5));
+        objects.add(new Object(new Vector2D(-60447145.2f, 5025882.59f), new Vector2D(-271.86f, -3157.38f), 450000, new Color(1, 1, 1, 1), 0.5));
+        objects.add(new Object(new Vector2D(-60194777.45, -7381123.25f), new Vector2D(400.1, -3144.26), 450000, new Color(1, 1, 1, 1), 0.5));
+        objects.add(new Object(new Vector2D(-57282363.24, -19596152.41), new Vector2D(1063.53, -2991.85), 450000, new Color(1, 1, 1, 1), 0.5));
         objects.add(new Object(new Vector2D(416490000 - 400000, 0), new Vector2D(0, -200), 450000, new Color(1, 1, 1, 1), 0.5));
         objects.add(new Object(new Vector2D(416490000 - 400000, 0), new Vector2D(0, -400), 450000, new Color(1, 1, 1, 1), 0.5));
     }
@@ -63,6 +65,17 @@ public class Main extends ApplicationAdapter {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             paused = !paused;
             ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
+            int i = 0;
+            for (Object obj : objects) {
+                sr.setColor(obj.getColor());
+
+                obj.update(objects, Gdx.graphics.getDeltaTime() * timescale / 10000);
+
+                System.out.println(i + ": " + obj.getPosition() + " " + obj.getVelocity());
+
+                i++;
+
+            }
         }
 
 
@@ -77,12 +90,14 @@ public class Main extends ApplicationAdapter {
         cam.position.y = (float)(objects.get(objFollowed).getPosition().getY() / scale);
         cam.update();
 
+        Gdx.gl.glEnable(GL30.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
 
         sr.setProjectionMatrix(cam2.combined);
         sr.begin(ShapeType.Filled);
 
-        sr.setColor(new Color(1, 1, 1, 1));
-        // sr.rect(-15, -15 * (h / w), 10, 2.5f);
+        sr.setColor(new Color(0, 0, 0, 0.01f));
+        sr.rect(-1920, -1080, 19200, 10800);
 
         sr.setProjectionMatrix(cam.combined);
 
@@ -118,6 +133,9 @@ public class Main extends ApplicationAdapter {
 
 
         sr.end();
+
+        Gdx.gl.glDisable(GL30.GL_BLEND);
+
 
 
         batch.begin();
