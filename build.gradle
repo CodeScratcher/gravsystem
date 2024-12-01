@@ -82,6 +82,8 @@ project(":core") {
 
     dependencies {
         implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
+        // https://mvnrepository.com/artifact/org.apache.commons/commons-csv
+        implementation 'org.apache.commons:commons-csv:1.12.0'
     }
 }
 

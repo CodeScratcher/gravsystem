@@ -9,8 +9,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.ScreenUtils;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -20,8 +25,9 @@ public class Main extends ApplicationAdapter {
     private OrthographicCamera cam;
     private int objFollowed = 0;
     private final double scale = 1e7;
-    private final double timescale = 10000;
+    private final double timescale = 100000;
     private List<Object> objects;
+    private List<Burn> burns;
     private double time = 0;
     private boolean paused = false;
 
@@ -48,8 +54,16 @@ public class Main extends ApplicationAdapter {
         objects.add(new Object(new Vector2D(-60447145.2f, 5025882.59f), new Vector2D(-271.86f, -3157.38f), 450000, new Color(1, 1, 1, 1), 0.5));
         objects.add(new Object(new Vector2D(-60194777.45, -7381123.25f), new Vector2D(400.1, -3144.26), 450000, new Color(1, 1, 1, 1), 0.5));
         objects.add(new Object(new Vector2D(-57282363.24, -19596152.41), new Vector2D(1063.53, -2991.85), 450000, new Color(1, 1, 1, 1), 0.5));
-        objects.add(new Object(new Vector2D(416490000 - 400000, 0), new Vector2D(0, -200), 450000, new Color(1, 1, 1, 1), 0.5));
-        objects.add(new Object(new Vector2D(416490000 - 400000, 0), new Vector2D(0, -400), 450000, new Color(1, 1, 1, 1), 0.5));
+        objects.add(new Object(new Vector2D(416490000 + -399665.1066, 17766.317899), new Vector2D(-63.591422, -198.825719), 450000, new Color(1, 1, 1, 1), 0.5));
+        objects.add(new Object(new Vector2D(416490000 + -399665.1066, 17766.317899), new Vector2D(-63.591422, -198.825719), 450000, new Color(1, 1, 1, 1), 0.5));
+        objects.add(new Object(new Vector2D(416490000 + -291295.092563, -305091.800706), new Vector2D(857.382695, 178.842653), 450000, new Color(1, 1, 1, 1), 0.5));
+        objects.add(new Object(new Vector2D(416490000 + 516142.330157, -716390.741616), new Vector2D(869.355337, 1305.260246), 450000, new Color(1, 1, 1, 1), 0.5));
+        try {
+            burns = Burn.fromCSV(Gdx.files.internal("burns.csv").toString(), objects);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
     }
 
     @Override
@@ -66,12 +80,16 @@ public class Main extends ApplicationAdapter {
             paused = !paused;
             ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
             int i = 0;
+            System.out.println(time);
+            
+                        
             for (Object obj : objects) {
                 sr.setColor(obj.getColor());
 
                 obj.update(objects, Gdx.graphics.getDeltaTime() * timescale / 10000);
+                NumberFormat fmt = new DecimalFormat("#.######");
 
-                System.out.println(i + ": " + obj.getPosition() + " " + obj.getVelocity());
+                System.out.println(i + ": " + obj.getPosition().subtract(objects.get(objFollowed).getPosition()).toString(fmt) + " " + obj.getVelocity().toString(fmt));
 
                 i++;
 
@@ -103,6 +121,19 @@ public class Main extends ApplicationAdapter {
 
         if (!paused) {
             for (int i = 0; i < 10000; i++) {
+                if (!burns.isEmpty()) {
+                    Burn firstBurn = burns.get(0);
+                    if (time <= firstBurn.getTime() && time + Gdx.graphics.getDeltaTime() * timescale * i / 10000 > firstBurn.getTime()) {
+                        Object obj = objects.get(firstBurn.getId());
+                        Vector2D tangent = obj.getVelocity().normalize();
+                        Vector2D normal = new Vector2D(-tangent.getY(), tangent.getX()); // TODO this assumes clockwise
+                        Vector2D actual = tangent.scalarMultiply(firstBurn.getVelocity().getX()).add(normal.scalarMultiply(firstBurn.getVelocity().getY()));
+                        obj.setVelocity(obj.getVelocity().add(actual));
+                        
+                        burns.remove(0);
+                    }
+                }
+
                 for (Object obj : objects) {
                     sr.setColor(obj.getColor());
 
