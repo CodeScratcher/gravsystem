@@ -23,9 +23,9 @@ public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private ShapeRenderer sr;
     private OrthographicCamera cam;
-    private int objFollowed = 0;
-    private final double scale = 1e7;
-    private final double timescale = 100000;
+    private int objFollowed = 1;
+    private final double scale = 1e4;
+    private final double timescale = 100;
     private List<Object> objects;
     private List<Burn> burns;
     private double time = 0;
@@ -51,9 +51,9 @@ public class Main extends ApplicationAdapter {
         // objects.add(new Object(new Vector2D(152099968880.0, 0), new Vector2D(0, 29290), 5.9722e24));
         objects.add(new Object(new Vector2D(0, 0), new Vector2D(0, 0), 9.45996e24, new Color(0.3f, 0.7f, 1.0f, 1.0f), 5.0));
         objects.add(new Object(new Vector2D(416490000, 0), new Vector2D(0, 1243.49862203), 1.06e22, new Color(0.6f, 0.6f, 0.6f, 1.0f), 1.0));
-        objects.add(new Object(new Vector2D(-60447145.2f, 5025882.59f), new Vector2D(-271.86f, -3157.38f), 450000, new Color(1, 1, 1, 1), 0.5));
-        objects.add(new Object(new Vector2D(-60194777.45, -7381123.25f), new Vector2D(400.1, -3144.26), 450000, new Color(1, 1, 1, 1), 0.5));
-        objects.add(new Object(new Vector2D(-57282363.24, -19596152.41), new Vector2D(1063.53, -2991.85), 450000, new Color(1, 1, 1, 1), 0.5));
+        objects.add(new Object(new Vector2D(416490000 + 400000, 0), new Vector2D(0, 2243.498), 450000, new Color(1, 1, 1, 1), 0.5));
+        objects.add(new Object(new Vector2D(416490000 + 391836.382161, 60319.560066), new Vector2D(-269.324186, 2222.906252), 450000, new Color(1, 1, 1, 1), 0.5));
+        objects.add(new Object(new Vector2D(416490000 + 366633.905791, 119093.87444), new Vector2D(-546.855841, 2156.978295), 450000, new Color(1, 1, 1, 1), 0.5));
         objects.add(new Object(new Vector2D(416490000 + -399665.1066, 17766.317899), new Vector2D(-63.591422, -198.825719), 450000, new Color(1, 1, 1, 1), 0.5));
         objects.add(new Object(new Vector2D(416490000 + -399665.1066, 17766.317899), new Vector2D(-63.591422, -198.825719), 450000, new Color(1, 1, 1, 1), 0.5));
         objects.add(new Object(new Vector2D(416490000 + -291295.092563, -305091.800706), new Vector2D(857.382695, 178.842653), 450000, new Color(1, 1, 1, 1), 0.5));
@@ -63,7 +63,13 @@ public class Main extends ApplicationAdapter {
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-    
+
+    }
+
+    private double angle(Vector2D v1, Vector2D v2) {
+        double dot = v1.dotProduct(v2);
+        double det = v1.getX() * v2.getY() - v1.getY() * v2.getX();
+        return Math.atan2(det, dot) + Math.PI;
     }
 
     @Override
@@ -81,8 +87,8 @@ public class Main extends ApplicationAdapter {
             ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
             int i = 0;
             System.out.println(time);
-            
-                        
+
+
             for (Object obj : objects) {
                 sr.setColor(obj.getColor());
 
@@ -126,10 +132,11 @@ public class Main extends ApplicationAdapter {
                     if (time <= firstBurn.getTime() && time + Gdx.graphics.getDeltaTime() * timescale * i / 10000 > firstBurn.getTime()) {
                         Object obj = objects.get(firstBurn.getId());
                         Vector2D tangent = obj.getVelocity().normalize();
-                        Vector2D normal = new Vector2D(-tangent.getY(), tangent.getX()); // TODO this assumes clockwise
+                        Vector2D normal = new Vector2D(tangent.getY(), -tangent.getX()); // TODO this assumes ccw
                         Vector2D actual = tangent.scalarMultiply(firstBurn.getVelocity().getX()).add(normal.scalarMultiply(firstBurn.getVelocity().getY()));
+                        System.out.println();
                         obj.setVelocity(obj.getVelocity().add(actual));
-                        
+
                         burns.remove(0);
                     }
                 }
@@ -140,7 +147,18 @@ public class Main extends ApplicationAdapter {
                     obj.update(objects, Gdx.graphics.getDeltaTime() * timescale / 10000);
 
                     sr.circle((float)(obj.getPosition().getX() / scale), (float)(obj.getPosition().getY() / scale), (float)obj.getRadius());
+                    cam.position.x = (float)(objects.get(objFollowed).getPosition().getX() / scale);
+                    cam.position.y = (float)(objects.get(objFollowed).getPosition().getY() / scale);
+                    cam.update();
 
+                    sr.setProjectionMatrix(cam.combined);
+
+
+                }
+
+                double angle = angle(objects.get(2).getPosition().add(objects.get(objFollowed).getPosition().scalarMultiply(-1)), objects.get(1).getPosition().add(objects.get(objFollowed).getPosition().scalarMultiply(-1)));
+                if (5.90 < angle && angle < 5.91) {
+                    System.out.println("Time to launch: " + time);
                 }
             }
 

@@ -29,7 +29,7 @@ allprojects {
 
     dependencies {
         // https://mvnrepository.com/artifact/org.apache.commons/commons-math3
-        
+
 
     }
 }
@@ -81,7 +81,7 @@ project(":core") {
     apply plugin: "java-library"
 
     dependencies {
-        implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
+        implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
         // https://mvnrepository.com/artifact/org.apache.commons/commons-csv
         implementation 'org.apache.commons:commons-csv:1.12.0'
     }
