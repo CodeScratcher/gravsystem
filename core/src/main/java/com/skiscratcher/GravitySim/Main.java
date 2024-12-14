@@ -53,10 +53,12 @@ public class Main extends ApplicationAdapter {
         objects.add(new Object(new Vector2D(416490000, 0), new Vector2D(0, 1243.49862203), 1.06e22, new Color(0.6f, 0.6f, 0.6f, 1.0f), 1.0));
         objects.add(new Object(new Vector2D(416490000 + 400000, 0), new Vector2D(0, 2243.498), 450000, new Color(1, 1, 1, 1), 0.5));
         objects.add(new Object(new Vector2D(416490000 + 391836.382161, 60319.560066), new Vector2D(-269.324186, 2222.906252), 450000, new Color(1, 1, 1, 1), 0.5));
+        objects.add(new Object(new Vector2D(416490000 + 391836.382161, 60319.560066), new Vector2D(1200, 0), 450000, new Color(1, 0.7f, 0.7f, 1), 0.5));
         objects.add(new Object(new Vector2D(416490000 + 366633.905791, 119093.87444), new Vector2D(-546.855841, 2156.978295), 450000, new Color(1, 1, 1, 1), 0.5));
         objects.add(new Object(new Vector2D(416490000 + -399665.1066, 17766.317899), new Vector2D(-63.591422, -198.825719), 450000, new Color(1, 1, 1, 1), 0.5));
         objects.add(new Object(new Vector2D(416490000 + -399665.1066, 17766.317899), new Vector2D(-63.591422, -198.825719), 450000, new Color(1, 1, 1, 1), 0.5));
         objects.add(new Object(new Vector2D(416490000 + -291295.092563, -305091.800706), new Vector2D(857.382695, 178.842653), 450000, new Color(1, 1, 1, 1), 0.5));
+        objects.add(new Object(new Vector2D(416490000 + -291295.092563, -305091.800706), new Vector2D(400, 2243 + 1600), 450000, new Color(1, 0.7f, 0.7f, 1), 0.5));
         objects.add(new Object(new Vector2D(416490000 + 516142.330157, -716390.741616), new Vector2D(869.355337, 1305.260246), 450000, new Color(1, 1, 1, 1), 0.5));
         try {
             burns = Burn.fromCSV(Gdx.files.internal("burns.csv").toString(), objects);
